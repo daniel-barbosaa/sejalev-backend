@@ -14,12 +14,69 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid()) @db.Uuid
-  name       String
-  email      String   @unique
-  password   String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("users") 
+  tasks   Task[]
+  diaries Diary[]
+
+  @@map("users")
+}
+
+enum PriorityType {
+  PAIN_PREVENTION
+  GAIN_PRODUCTION
+
+  @@map("priority")
+}
+
+enum StatusType {
+  PENDING
+  DONE
+
+  @@map("status")
+}
+
+model Task {
+  id          String       @id @default(uuid()) @db.Uuid
+  userId      String       @map("user_id") @db.Uuid
+  title       String
+  description String?      @db.Text
+  priority    PriorityType
+  date        DateTime
+  status      StatusType
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@map("tasks")
+}
+
+enum MoodType {
+  GOOD
+  NEUTRAL
+  BAD
+
+  @@map("mood")
+}
+
+model Diary {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  date      DateTime
+  content   String   @db.Text
+  mood      MoodType
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@map("diaries")
 }
