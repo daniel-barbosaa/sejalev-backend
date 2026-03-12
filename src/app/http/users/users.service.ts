@@ -1,15 +1,13 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { hash } from 'bcryptjs';
+import { CreateUserSchema } from 'src/domain/schemas/user';
 
-import { CreateUserDto } from './users.dto';
 import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
-  async create(createUserDto: CreateUserDto) {
-    const { name, email, password } = createUserDto;
-
+  async create({ name, email, password }: CreateUserSchema) {
     const emailTaken = await this.usersRepository.findByEmail({
       where: { email },
       select: { id: true },
