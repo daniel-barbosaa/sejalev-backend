@@ -1,18 +1,23 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { compare } from 'bcryptjs';
-import { SignInSchema } from 'src/domain/schemas/auth';
+import { compare, hash } from 'bcryptjs';
+import { SignInSchema, SignUpSchema } from 'src/domain/schemas/auth';
 
 import { UsersRepository } from '../users/users.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersRepo: UsersRepository,
+    private readonly usersRepository: UsersRepository,
+
     private jwtService: JwtService,
   ) {}
-  async signIn({ email, password }: SignInSchema) {
-    const user = await this.usersRepo.findByEmail({
+  async signin({ email, password }: SignInSchema) {
+    const user = await this.usersRepository.findByEmail({
       where: {
         email,
       },
@@ -32,7 +37,36 @@ export class AuthService {
       );
     }
 
-    const accessToken = await this.jwtService.signAsync({ sub: user.id });
+    const accessToken = await this.generateAccessToken(user.id);
     return { accessToken };
+  }
+
+  async signup({ name, email, password }: SignUpSchema) {
+    const emailTaken = await this.usersRepository.findByEmail({
+      where: { email },
+      select: { id: true },
+    });
+
+    if (emailTaken) {
+      throw new ConflictException('Esse email já está em uso.');
+    }
+
+    const hashedPassword = await hash(password, 12);
+
+    const user = await this.usersRepository.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
+
+    const accessToken = await this.generateAccessToken(user.id);
+
+    return { accessToken };
+  }
+
+  private generateAccessToken(userId: string) {
+    return this.jwtService.signAsync({ sub: userId });
   }
 }
