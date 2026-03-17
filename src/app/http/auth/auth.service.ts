@@ -17,7 +17,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
   async signin({ email, password }: SignInSchema) {
-    const user = await this.usersRepository.findByEmail({
+    const user = await this.usersRepository.findUnique({
       where: {
         email,
       },
@@ -42,7 +42,7 @@ export class AuthService {
   }
 
   async signup({ name, email, password }: SignUpSchema) {
-    const emailTaken = await this.usersRepository.findByEmail({
+    const emailTaken = await this.usersRepository.findUnique({
       where: { email },
       select: { id: true },
     });

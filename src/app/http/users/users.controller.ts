@@ -1,5 +1,5 @@
-import { Controller, Get, Req } from '@nestjs/common';
-import console from 'console';
+import { Controller, Get } from '@nestjs/common';
+import { ActiveUserId } from 'src/common/decorators/active-user-id.decorator';
 
 import { UsersService } from './users.service';
 
@@ -8,8 +8,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/me')
-  me(@Req() request: Request & { userId: string }) {
-    console.log({ meUserId: request.userId });
-    return this.usersService.getUserById('userId');
+  me(@ActiveUserId() userId: string) {
+    return this.usersService.getUserById(userId);
   }
 }
