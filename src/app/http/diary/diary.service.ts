@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { GetDiaryFilterSchema } from 'src/domain/schemas/diary';
 
 import { CreateDiaryDto, UpdateDiaryDto } from './diary.dto';
 import { DiaryRepository } from './diary.repository';
@@ -6,7 +11,15 @@ import { DiaryRepository } from './diary.repository';
 @Injectable()
 export class DiaryService {
   constructor(private diaryRepository: DiaryRepository) {}
-  create(userId: string, { content, date, mood }: CreateDiaryDto) {
+  async create(userId: string, { content, date, mood }: CreateDiaryDto) {
+    const existingDiary = await this.diaryRepository.findFirst({
+      where: { userId, date },
+    });
+
+    if (existingDiary) {
+      throw new ConflictException('Você já registrou um diário para este dia.');
+    }
+
     return this.diaryRepository.create({
       data: {
         userId,
@@ -17,25 +30,30 @@ export class DiaryService {
     });
   }
 
-  findAll() {
-    return `This action returns all diary`;
-  }
+  findAllByUserId(userId: string, filter: GetDiaryFilterSchema) {
+    const { date } = filter;
 
-  findOne(id: number) {
-    return `This action returns a #${id} diary`;
+    const dateFilter = date ? new Date(date) : undefined;
+
+    return this.diaryRepository.findMany({
+      where: {
+        userId,
+        date: dateFilter,
+      },
+    });
   }
 
   async update(
     userId: string,
-    taskId: string,
+    diaryId: string,
     { content, date, mood }: UpdateDiaryDto,
   ) {
-    await this.validateTaskOwnerShip(userId, taskId);
+    await this.validateTaskOwnerShip(userId, diaryId);
 
     return this.diaryRepository.update({
       where: {
         userId,
-        id: taskId,
+        id: diaryId,
       },
       data: {
         content,

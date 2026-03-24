@@ -10,6 +10,10 @@ export class DiaryRepository {
     return this.prismaService.diary.create(createDto);
   }
 
+  findMany(findManyDto: Prisma.DiaryFindManyArgs) {
+    return this.prismaService.diary.findMany(findManyDto);
+  }
+
   findFirst(findFirstDto: Prisma.DiaryFindFirstArgs) {
     return this.prismaService.diary.findFirst(findFirstDto);
   }

@@ -29,3 +29,12 @@ export const updateDiarySchema = diarySchema.pick({
 });
 
 export type UpdateDiarySchema = z.infer<typeof diarySchema>;
+
+export const getDiaryFilterSchema = z.object({
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato deve ser YYYY-MM-DD')
+    .optional(),
+});
+
+export type GetDiaryFilterSchema = z.infer<typeof getDiaryFilterSchema>;

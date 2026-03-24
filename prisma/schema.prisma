@@ -69,7 +69,7 @@ enum MoodType {
 model Diary {
   id        String   @id @default(uuid()) @db.Uuid
   userId    String   @map("user_id") @db.Uuid
-  date      DateTime
+  date      DateTime @db.Date()
   content   String   @db.Text
   mood      MoodType
   createdAt DateTime @default(now()) @map("created_at")

@@ -5,11 +5,11 @@ import {
   Get,
   Param,
   Post,
-  Put,
+  Query,
 } from '@nestjs/common';
 import { ActiveUserId } from 'src/common/decorators/active-user-id.decorator';
 
-import { CreateDiaryDto, UpdateDiaryDto } from './diary.dto';
+import { CreateDiaryDto, GetDiaryFilterDto } from './diary.dto';
 import { DiaryService } from './diary.service';
 
 @Controller('diary')
@@ -25,17 +25,8 @@ export class DiaryController {
   }
 
   @Get()
-  findAll() {
-    return this.diaryService.findAll();
-  }
-
-  @Put(':taskId')
-  update(
-    @ActiveUserId() userId: string,
-    @Param('taskId') taskId: string,
-    @Body() updateDiaryDto: UpdateDiaryDto,
-  ) {
-    return this.diaryService.update(userId, taskId, updateDiaryDto);
+  findAll(@ActiveUserId() userId: string, @Query() query: GetDiaryFilterDto) {
+    return this.diaryService.findAllByUserId(userId, query);
   }
 
   @Delete(':id')
