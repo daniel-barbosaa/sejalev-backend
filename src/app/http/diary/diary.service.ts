@@ -11,9 +11,14 @@ import { DiaryRepository } from './diary.repository';
 @Injectable()
 export class DiaryService {
   constructor(private diaryRepository: DiaryRepository) {}
+
   async create(userId: string, { content, date, mood }: CreateDiaryDto) {
+    const dateFilter = date ? new Date(date) : new Date();
+
+    dateFilter.setDate(dateFilter.getDate() - 1);
+
     const existingDiary = await this.diaryRepository.findFirst({
-      where: { userId, date },
+      where: { userId, date: dateFilter },
     });
 
     if (existingDiary) {
@@ -24,7 +29,7 @@ export class DiaryService {
       data: {
         userId,
         content,
-        date,
+        date: dateFilter,
         mood,
       },
     });
@@ -33,12 +38,20 @@ export class DiaryService {
   findAllByUserId(userId: string, filter: GetDiaryFilterSchema) {
     const { date } = filter;
 
-    const dateFilter = date ? new Date(date) : undefined;
+    if (date) {
+      return this.diaryRepository.findUnique({
+        where: {
+          userId_date: {
+            userId,
+            date: new Date(date),
+          },
+        },
+      });
+    }
 
     return this.diaryRepository.findMany({
       where: {
         userId,
-        date: dateFilter,
       },
     });
   }
@@ -46,7 +59,7 @@ export class DiaryService {
   async update(
     userId: string,
     diaryId: string,
-    { content, date, mood }: UpdateDiaryDto,
+    { content, mood }: UpdateDiaryDto,
   ) {
     await this.validateTaskOwnerShip(userId, diaryId);
 
@@ -57,14 +70,9 @@ export class DiaryService {
       },
       data: {
         content,
-        date,
         mood,
       },
     });
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} diary`;
   }
 
   private async validateTaskOwnerShip(

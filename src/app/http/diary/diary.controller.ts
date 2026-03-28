@@ -1,15 +1,16 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { ActiveUserId } from 'src/common/decorators/active-user-id.decorator';
 
-import { CreateDiaryDto, GetDiaryFilterDto } from './diary.dto';
+import { CreateDiaryDto, GetDiaryFilterDto, UpdateDiaryDto } from './diary.dto';
 import { DiaryService } from './diary.service';
 
 @Controller('diary')
@@ -29,8 +30,12 @@ export class DiaryController {
     return this.diaryService.findAllByUserId(userId, query);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.diaryService.remove(+id);
+  @Put(':diaryId')
+  update(
+    @ActiveUserId() userId: string,
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
+    @Body() updateDiaryDto: UpdateDiaryDto,
+  ) {
+    return this.diaryService.update(userId, diaryId, updateDiaryDto);
   }
 }

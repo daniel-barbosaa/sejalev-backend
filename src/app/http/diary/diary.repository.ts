@@ -17,6 +17,9 @@ export class DiaryRepository {
   findFirst(findFirstDto: Prisma.DiaryFindFirstArgs) {
     return this.prismaService.diary.findFirst(findFirstDto);
   }
+  findUnique(findUniqueDto: Prisma.DiaryFindUniqueArgs) {
+    return this.prismaService.diary.findUnique(findUniqueDto);
+  }
   update(updateDto: Prisma.DiaryUpdateArgs) {
     return this.prismaService.diary.update(updateDto);
   }
