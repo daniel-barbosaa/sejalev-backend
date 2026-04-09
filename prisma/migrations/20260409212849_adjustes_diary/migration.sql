@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "diaries" ADD COLUMN     "dayWasGood" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "exercised" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "keptPromises" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "sleptWell" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "workProductive" BOOLEAN NOT NULL DEFAULT false,
+ALTER COLUMN "content" DROP NOT NULL,
+ALTER COLUMN "mood" SET DEFAULT 'NEUTRAL';

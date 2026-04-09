@@ -9,10 +9,11 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ActiveUserId } from 'src/common/decorators/active-user-id.decorator';
 
-import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
+import { CreateTaskDto, GetTaskFilterDto, UpdateTaskDto } from './tasks.dto';
 import { TasksService } from './tasks.service';
 
 @Controller('tasks')
@@ -25,8 +26,8 @@ export class TasksController {
   }
 
   @Get()
-  findAll(@ActiveUserId() userId: string) {
-    return this.tasksService.findAllByUserId(userId);
+  findAll(@ActiveUserId() userId: string, @Query() query: GetTaskFilterDto) {
+    return this.tasksService.findAllByUserId(userId, query);
   }
 
   @Put(':taskId')

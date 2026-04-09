@@ -41,3 +41,17 @@ export const updateTaskSchema = taskSchema
   .partial();
 
 export type UpdateTaskSchema = z.infer<typeof updateTaskSchema>;
+
+export const getTaskFilterSchema = z.object({
+  startDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato deve ser YYYY-MM-DD')
+    .optional(),
+
+  endDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato deve ser YYYY-MM-DD')
+    .optional(),
+});
+
+export type GetTaskFilterSchema = z.infer<typeof getTaskFilterSchema>;

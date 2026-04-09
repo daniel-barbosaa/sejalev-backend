@@ -21,8 +21,9 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  tasks   Task[]
-  diaries Diary[]
+  tasks     Task[]
+  diaries   Diary[]
+  books Books[]
 
   @@map("users")
 }
@@ -67,11 +68,19 @@ enum MoodType {
 }
 
 model Diary {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  date      DateTime @db.Date()
-  content   String   @db.Text
-  mood      MoodType
+  id      String   @id @default(uuid()) @db.Uuid
+  userId  String   @map("user_id") @db.Uuid
+  date    DateTime
+  content String?  @db.Text
+
+  mood MoodType @default(NEUTRAL)
+
+  workProductive Boolean @default(false)
+  dayWasGood     Boolean @default(false)
+  sleptWell      Boolean @default(false)
+  keptPromises   Boolean @default(false)
+  exercised      Boolean @default(false)
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -79,4 +88,27 @@ model Diary {
 
   @@unique([userId, date])
   @@map("diaries")
+}
+
+enum BookStatus {
+  WANT_TO_READ
+  READ
+  READING
+}
+
+model Books {
+  id         String     @id @default(uuid()) @db.Uuid
+  userId     String     @map("user_id") @db.Uuid
+  externalId String?
+  title      String
+  author     String?
+  thumbnail  String?    @db.Text
+  status     BookStatus @default(WANT_TO_READ)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("books")
 }

@@ -1,5 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateTaskSchema, UpdateTaskSchema } from 'src/domain/schemas/task';
+import {
+  CreateTaskSchema,
+  GetTaskFilterSchema,
+  UpdateTaskSchema,
+} from 'src/domain/schemas/task';
 
 import { TasksReporitory } from './tasks.reporitory';
 
@@ -23,7 +27,23 @@ export class TasksService {
     });
   }
 
-  findAllByUserId(userId: string) {
+  findAllByUserId(userId: string, filter: GetTaskFilterSchema) {
+    const { startDate, endDate } = filter;
+
+    if (startDate && endDate) {
+      return this.tasksRepository.findMany({
+        where: {
+          userId,
+          date: {
+            ...(startDate && { gte: new Date(startDate) }),
+            ...(endDate && { lte: new Date(endDate) }),
+          },
+        },
+        orderBy: {
+          date: 'asc',
+        },
+      });
+    }
     return this.tasksRepository.findMany({
       where: { userId },
     });

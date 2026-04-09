@@ -6,8 +6,15 @@ export const diarySchema = z.object({
   id: z.uuid(),
   userId: z.uuid(),
   date: z.coerce.date(),
-  content: z.string().min(20),
-  mood: z.enum(MOOD_TYPE),
+  content: z.string().optional().nullable(),
+  mood: z.enum(MOOD_TYPE).default('NEUTRAL'),
+
+  workProductive: z.boolean().default(false),
+  dayWasGood: z.boolean().default(false),
+  sleptWell: z.boolean().default(false),
+  keptPromises: z.boolean().default(false),
+  exercised: z.boolean().default(false),
+
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
@@ -18,17 +25,14 @@ export const createDiarySchema = diarySchema.pick({
   date: true,
   content: true,
   mood: true,
+  workProductive: true,
+  dayWasGood: true,
+  sleptWell: true,
+  keptPromises: true,
+  exercised: true,
 });
 
-export type CreateDiarySchema = z.infer<typeof diarySchema>;
-
-export const updateDiarySchema = diarySchema.pick({
-  date: true,
-  content: true,
-  mood: true,
-});
-
-export type UpdateDiarySchema = z.infer<typeof diarySchema>;
+export type CreateDiarySchema = z.infer<typeof createDiarySchema>;
 
 export const getDiaryFilterSchema = z.object({
   date: z

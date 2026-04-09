@@ -27,6 +27,7 @@
     "db:migrate:dev": "prisma migrate dev"
   },
   "dependencies": {
+    "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",
@@ -35,6 +36,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
+    "axios": "^1.15.0",
     "bcryptjs": "^3.0.3",
     "nestjs-zod": "^5.1.1",
     "reflect-metadata": "^0.2.2",

@@ -9,18 +9,15 @@ export class DiaryRepository {
   create(createDto: Prisma.DiaryCreateArgs) {
     return this.prismaService.diary.create(createDto);
   }
+  upsert(upsertDto: Prisma.DiaryUpsertArgs) {
+    return this.prismaService.diary.upsert(upsertDto);
+  }
 
   findMany(findManyDto: Prisma.DiaryFindManyArgs) {
     return this.prismaService.diary.findMany(findManyDto);
   }
 
-  findFirst(findFirstDto: Prisma.DiaryFindFirstArgs) {
-    return this.prismaService.diary.findFirst(findFirstDto);
-  }
   findUnique(findUniqueDto: Prisma.DiaryFindUniqueArgs) {
     return this.prismaService.diary.findUnique(findUniqueDto);
-  }
-  update(updateDto: Prisma.DiaryUpdateArgs) {
-    return this.prismaService.diary.update(updateDto);
   }
 }

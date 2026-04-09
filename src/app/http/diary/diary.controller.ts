@@ -1,16 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseUUIDPipe,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ActiveUserId } from 'src/common/decorators/active-user-id.decorator';
 
-import { CreateDiaryDto, GetDiaryFilterDto, UpdateDiaryDto } from './diary.dto';
+import { CreateDiaryDto, GetDiaryFilterDto } from './diary.dto';
 import { DiaryService } from './diary.service';
 
 @Controller('diary')
@@ -28,14 +19,5 @@ export class DiaryController {
   @Get()
   findAll(@ActiveUserId() userId: string, @Query() query: GetDiaryFilterDto) {
     return this.diaryService.findAllByUserId(userId, query);
-  }
-
-  @Put(':diaryId')
-  update(
-    @ActiveUserId() userId: string,
-    @Param('diaryId', ParseUUIDPipe) diaryId: string,
-    @Body() updateDiaryDto: UpdateDiaryDto,
-  ) {
-    return this.diaryService.update(userId, diaryId, updateDiaryDto);
   }
 }
