@@ -6,9 +6,6 @@ import { PrismaService } from 'src/database/prisma.service';
 export class DiaryRepository {
   constructor(private prismaService: PrismaService) {}
 
-  create(createDto: Prisma.DiaryCreateArgs) {
-    return this.prismaService.diary.create(createDto);
-  }
   upsert(upsertDto: Prisma.DiaryUpsertArgs) {
     return this.prismaService.diary.upsert(upsertDto);
   }
