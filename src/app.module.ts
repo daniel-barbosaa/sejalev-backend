@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 
 import { AuthModule } from './app/http/auth/auth.module';
+import { BooksModule } from './app/http/books/books.module';
 import { DiaryModule } from './app/http/diary/diary.module';
 import { TasksModule } from './app/http/tasks/tasks.module';
 import { UsersModule } from './app/http/users/users.module';
@@ -19,6 +20,7 @@ import { DatabaseModule } from './database/database.module';
     AuthModule,
     TasksModule,
     DiaryModule,
+    BooksModule,
   ],
   controllers: [],
   providers: [
