@@ -8,7 +8,7 @@ import { DiaryRepository } from './diary.repository';
 
 @Injectable()
 export class DiaryService {
-  constructor(private diaryRepository: DiaryRepository) {}
+  constructor(private readonly diaryRepository: DiaryRepository) {}
 
   create(
     userId: string,

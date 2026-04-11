@@ -1,11 +1,12 @@
 import z from 'zod';
 
 export const STATUS_TYPE = ['WANT_TO_READ', 'READ', 'READING'] as const;
+export type BookStatus = (typeof STATUS_TYPE)[number];
 
 export const bookSchema = z.object({
   id: z.uuid(),
   userId: z.uuid(),
-  externalId: z.string().optional(),
+  externalId: z.string(),
   title: z.string(),
   author: z.string().optional(),
   thumbnail: z.string(),

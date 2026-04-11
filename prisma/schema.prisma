@@ -21,9 +21,9 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  tasks     Task[]
-  diaries   Diary[]
-  books Books[]
+  tasks   Task[]
+  diaries Diary[]
+  books   Books[]
 
   @@map("users")
 }
@@ -110,5 +110,6 @@ model Books {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, externalId])
   @@map("books")
 }

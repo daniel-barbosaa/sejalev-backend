@@ -7,6 +7,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ActiveUserId } from 'src/common/decorators/active-user-id.decorator';
 
 import { CreateBookDto, GetBookFilterDto } from './books.dto';
 import { BooksService } from './books.service';
@@ -15,25 +16,18 @@ import { BooksService } from './books.service';
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  @Post()
-  create(@Body() createBookDto: CreateBookDto) {
-    return this.booksService.create(createBookDto);
-  }
-
   @Get()
-  search(@Query() query: GetBookFilterDto) {
-    return this.booksService.searchExternalBooks(query);
+  search(@ActiveUserId() userId: string, @Query() query: GetBookFilterDto) {
+    return this.booksService.searchExternalBooks(userId, query);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.booksService.findOne(+id);
+  @Post()
+  addToLibrary(
+    @ActiveUserId() userId: string,
+    @Body() createBookDto: CreateBookDto,
+  ) {
+    return this.booksService.addToLibrary(userId, createBookDto);
   }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-  //   return this.booksService.update(+id, updateBookDto);
-  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

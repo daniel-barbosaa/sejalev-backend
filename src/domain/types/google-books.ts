@@ -1,3 +1,5 @@
+import { BookStatus } from '../schemas/book';
+
 export interface GoogleBookItem {
   id: string;
   volumeInfo: {
@@ -18,4 +20,6 @@ export interface BookSearchResponse {
   title: string;
   author: string;
   thumbnail: string | null;
+  status: BookStatus;
+  isInLibrary: boolean;
 }

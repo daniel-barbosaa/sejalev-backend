@@ -13,10 +13,14 @@ const envSchema = z.object({
 
   // Secrets
   JWT_SECRET: z.string().min(1),
+
+  // Google API
+  GOOGLE_BOOKS_API_KEY: z.string().min(1),
 });
 
 const _env = envSchema.parse(process.env);
 
 export const env = {
   jwtSecret: _env.JWT_SECRET,
+  googleBooksApíKey: _env.GOOGLE_BOOKS_API_KEY,
 };
