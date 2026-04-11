@@ -12,4 +12,10 @@ export class BooksRepository {
   findMany(findManyDto: Prisma.BooksFindManyArgs) {
     return this.prismaService.books.findMany(findManyDto);
   }
+  findFirst(findFirstDto: Prisma.BooksFindFirstArgs) {
+    return this.prismaService.books.findFirst(findFirstDto);
+  }
+  delete(deleteDto: Prisma.BooksDeleteArgs) {
+    return this.prismaService.books.delete(deleteDto);
+  }
 }

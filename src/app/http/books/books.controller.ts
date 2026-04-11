@@ -16,9 +16,14 @@ import { BooksService } from './books.service';
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  @Get()
+  @Get('search')
   search(@ActiveUserId() userId: string, @Query() query: GetBookFilterDto) {
     return this.booksService.searchExternalBooks(userId, query);
+  }
+
+  @Get()
+  findAll(@ActiveUserId() userId: string, @Query() query: GetBookFilterDto) {
+    return this.booksService.findAllByUserId(userId, query);
   }
 
   @Post()
@@ -29,8 +34,8 @@ export class BooksController {
     return this.booksService.addToLibrary(userId, createBookDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.booksService.remove(+id);
+  @Delete(':bookId')
+  remove(@ActiveUserId() userId: string, @Param('bookId') bookId: string) {
+    return this.booksService.remove(userId, bookId);
   }
 }

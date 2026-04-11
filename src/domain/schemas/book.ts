@@ -28,7 +28,8 @@ export const createBookSchema = bookSchema.pick({
 export type CreateBookSchema = z.infer<typeof createBookSchema>;
 
 export const getBookFilterSchema = z.object({
-  search: z.string(),
+  search: z.string().optional(),
+  status: z.enum(STATUS_TYPE).optional(),
 });
 
 export type GetBookFilterSchema = z.infer<typeof getBookFilterSchema>;

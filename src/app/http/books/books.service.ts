@@ -1,5 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { CreateBookSchema, GetBookFilterSchema } from 'src/domain/schemas/book';
 import {
@@ -17,8 +21,18 @@ export class BooksService {
     private readonly booksRepository: BooksRepository,
   ) {}
 
-  findAll() {
-    return `This action returns all books`;
+  findAllByUserId(userId: string, filter: GetBookFilterSchema) {
+    const { status } = filter;
+
+    return this.booksRepository.findMany({
+      where: {
+        userId,
+        status,
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
   }
 
   async searchExternalBooks(
@@ -95,13 +109,31 @@ export class BooksService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} book`;
+  async remove(userId: string, bookId: string) {
+    await this.validateBookOwnerShip(userId, bookId);
+
+    await this.booksRepository.delete({
+      where: { id: bookId },
+    });
   }
 
   private buildGoogleBooksUrl(search: string): string {
     const apiKey = env.googleBooksApíKey;
     const baseUrl = 'https://www.googleapis.com/books/v1/volumes';
     return `${baseUrl}?q=${encodeURIComponent(search)}&maxResults=12&key=${apiKey}`;
+  }
+
+  private async validateBookOwnerShip(
+    userId: string,
+    bookId: string,
+  ): Promise<boolean> {
+    const isOwner = await this.booksRepository.findFirst({
+      where: { id: bookId, userId },
+    });
+
+    if (!isOwner) {
+      throw new NotFoundException('Livro não encontrado.');
+    }
+    return true;
   }
 }
